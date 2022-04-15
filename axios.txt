@@ -1,0 +1,93 @@
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+*********************************************************************************
+
+？？？？？？？？？？？？？？？？？？？？？？？？？？？？
+安装： 像jQuery一样引入
+配置：const  youmi  =  axios.create({
+	timeout: 5000,          //请求超时
+	beaseURL: "path"     //接口地址
+           }）
+
+axios.defaults.timeout = 10000;   // 配置ajax请求的超时时间
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'; // 配置ajax post请求的请求头
+
+请求试拦截器拦截的是req(request)请求，config：配置
+	axios.interceptors.request.use(function (config) {
+		// 在发送请求之前做些什么
+		return config;
+	}，function(error){
+		// 对请求错误做些什么
+		return Promise.reject(error)
+	})
+同理，响应式拦截器拦截的是res(response)请求
+	axios.interceptors.response.use(function (response) {
+		// 对响应数据做点什么
+		return Promise.resolve(response.data)            //response.data是服务器响应的数据
+	}，function(error){
+		// 对响应错误做点什么
+		return Promise.reject(error);
+	})
+注意：此流程是通过 promise 串连起来的, 请求拦截器传递的是 config, 响应拦截器传递的是 response
+
+axios中的get和post发送请求的语法:
+           axios.get(url，{params配置}).then(res=>{成功的res不是数据，而是整个报文，res.data才是数据}).catch(err=>{})
+           axios.post(url,{参数:参数值,参数1:参数值1}).then(res=>{同样，res.data才是数据}).catch(err=>{})
+           或：axios({			//这三行是config，config就是配置，axios中的配置都可以叫config，也有单独的配置对象 config: { },
+	       method: 'GET/POST',
+	       url: ''
+	       data: 	{ }		//`data` 是作为请求体被发送的数据，get没有
+	       data:			//发送请求体数据的可选语法，get没有
+	       timeout: 1000		//指定请求超时的毫秒数，默认值是 `0` (永不超时)
+	  }).then(response =>{
+	       代码
+	  })
+           其中params是即将与请求一起发送的 URL 参数，必须是一个无格式对象(plain object)或 URLSearchParams 对象
+           data是作为请求主体被发送的数据，GET中没有，POST有
+           还有一堆配置，去官网https://www.axios-http.cn/docs/interceptors
+            
+
+对get和post请求的封装：
+	function geturl(url,params){
+    	       return new Promise((resolve,reject)=>{
+       		 let params ={
+            		      params:params
+        		 }
+        		 instance.get(url,params).then(res=>{
+            		      resolve(res)
+        		 }).catch(err=>{
+            		      reject(err)
+        		 })
+    	        })
+	}
+	post请求封装：
+	function posturl(url,params){
+    	       return new Promise((resolve,reject)=>{
+        		 instance.post(url,params).then(res=>{
+            		      resolve(res)
+        		 }).catch(err=>{
+            		      reject(err)
+        		 })
+    	        })
+	 }	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
